@@ -1,0 +1,67 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="25dp"
+    android:paddingRight="25dp"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".ActivityMain">
+
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:text="PET MODE"
+        android:id="@+id/switchPet"
+        android:textOn="ON"
+        android:textOff="OFF"
+        android:checked="false"
+        android:layout_below="@+id/btnTemp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="30dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:text="SILENT MODE"
+        android:id="@+id/switchSilent"
+        android:checked="false"
+        android:layout_below="@+id/switchPet"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="10dp" />
+
+    <ImageButton
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:id="@+id/btnTemp"
+        android:src="@drawable/temp"
+        android:scaleType="centerCrop"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_alignBottom="@+id/btnArm"
+        android:layout_alignRight="@+id/switchPet"
+        android:layout_alignEnd="@+id/switchPet"
+        android:layout_marginBottom="-20dp" />
+
+    <ImageButton
+        android:layout_width="240dp"
+        android:layout_height="240dp"
+        android:id="@+id/btnArm"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/main0"
+        android:scaleType="centerCrop"
+        style="?android:attr/borderlessButtonStyle" />
+
+    <Button
+        android:layout_width="220dp"
+        android:layout_height="64dp"
+        android:text="SECURITY LOGS"
+        android:id="@+id/btnLogs"
+        android:layout_below="@+id/switchSilent"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp" />
+
+</RelativeLayout>
