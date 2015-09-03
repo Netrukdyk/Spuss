@@ -80,7 +80,7 @@ public class SpussService extends Service {
         startServer();
     }
 
-    public void showNotification(Context context, String title, String text) {
+    public void showNotification(Context context, String title, String contentText) {
 
         // define sound URI, the sound to be played when there's a notification
         Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -92,9 +92,8 @@ public class SpussService extends Service {
         // this is it, we'll build the notification!
         // in the addAction method, if you don't want any icon, just set the first param to 0
         Notification mNotification = new Notification.Builder(context)
-
-                .setContentTitle(title).setContentText(text).setSmallIcon(R.drawable.log5).setContentIntent(pIntent).setSound(soundUri).setLights(Color.RED, 300, 300)
-                .addAction(R.drawable.log3, "View", pIntent).addAction(0, "Remind", pIntent).setPriority(Notification.PRIORITY_MAX).build();
+                .setContentTitle(title).setContentText(contentText).setSmallIcon(R.drawable.ic_notification).setContentIntent(pIntent).setSound(soundUri).setLights(Color.RED, 300, 300)
+                .setPriority(Notification.PRIORITY_MAX).build();
         mNotification.defaults = 0;
         mNotification.defaults |= Notification.DEFAULT_LIGHTS;
         mNotification.flags |= Notification.FLAG_SHOW_LIGHTS;
@@ -141,6 +140,9 @@ public class SpussService extends Service {
     };
 
     private void parse(String jsonText) {
+        String sensor = "";
+        String who = "";
+
         if (jsonText.equals("{}"))
             return;
         try {
@@ -166,19 +168,14 @@ public class SpussService extends Service {
                     //removeDevice(id);
                 } else if (type.equals("changed")) {
 
-                    String sensor = "";
-                    String who = "";
+
                     if (id.charAt(0) == 'D') {
                         who = "Durys";
-                        try{
-                            Boolean vibr = json.getInt("vibr") == 1;
-                            Boolean mic = json.getInt("mic") == 1;
-                            sensor = (vibr) ? "Vibration" : (mic)? "Mic" : "";
-                        } catch (JSONException e){}
 
-                        //Switch switch1 = (Switch) devList.findViewWithTag(id).findViewById(R.id.switch1);
-                        //switch1.setChecked(relay);
-
+                        Boolean vibr = json.optInt("vibr") == 1;
+                        Boolean mic = json.optInt("mic") == 1;
+                        Log.e(TAG, vibr + "" + mic + "");
+                        sensor = (vibr) ? "Vibration" : (mic) ? "Mic" : "Other";
                     } else if (id.charAt(0) == 'L') {
                         who = "Langas";
                         //String temp = json.getString("temp");
