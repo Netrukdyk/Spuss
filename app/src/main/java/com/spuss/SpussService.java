@@ -155,7 +155,6 @@ public class SpussService extends Service {
                 Log.v("JSON", json.toString());
                 if (type.equals("device")) {
                     String alias = json.getString("alias");
-                    ;
                     if (id.charAt(0) == 'R') {
                         Boolean relay = json.getInt("relay") == 1;
                         //addSocket(new Socket(id, alias, relay));
@@ -163,34 +162,29 @@ public class SpussService extends Service {
                         String temp = json.getString("temp");
                         //addTemp(new Temp(id, alias, temp));
                     }
-
                 } else if (type.equals("del_device")) {
                     //removeDevice(id);
                 } else if (type.equals("changed")) {
 
-
                     if (id.charAt(0) == 'D') {
                         who = "Durys";
-
                         Boolean vibr = json.optInt("vibr") == 1;
                         Boolean mic = json.optInt("mic") == 1;
                         Log.e(TAG, vibr + "" + mic + "");
                         sensor = (vibr) ? "Vibration" : (mic) ? "Mic" : "Other";
                     } else if (id.charAt(0) == 'L') {
                         who = "Langas";
-                        //String temp = json.getString("temp");
-                        //TextView value = (TextView) devList.findViewWithTag(id).findViewById(R.id.value);
-                        // value.setText(temp);
                         sensor = "Vibration";
                     } else if (id.charAt(0) == 'S') {
                         who = "Stalas";
-                        //String temp = json.getString("temp");
-                        //TextView value = (TextView) devList.findViewWithTag(id).findViewById(R.id.value);
-                        // value.setText(temp);
-                        sensor = "Vibration";
+                        Boolean motion = json.optInt("motion") == 1;
+                        Boolean vibr = json.optInt("vibr") == 1;
+                        Boolean mic = json.optInt("mic") == 1;
+                        Log.e(TAG, vibr + "" + mic + "");
+                        sensor = (vibr) ? "Vibration" : (mic) ? "Mic" : (motion) ? "Motion" : "Other";
                     }
 
-                    showNotification(this, who, sensor);
+                    if(sensor != "Other") showNotification(this, who, sensor);
                 }
             }
         } catch (JSONException e) {
