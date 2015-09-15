@@ -148,8 +148,9 @@ public class ActivityMain extends AppCompatActivity implements View.OnClickListe
     private void armAnimation(){
         btnArm.setImageResource( (armed) ? R.drawable.main1 : R.drawable.main0 );
         int start = (armed) ? 180 : 0;
-        RotateAnimation ra = new RotateAnimation(start, start+180, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        RotateAnimation ra = new RotateAnimation(0, 180, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         ra.setFillAfter(true);
+        ra.setFillBefore(true);
         ra.setDuration(1000);
         btnArm.startAnimation(ra);
     }

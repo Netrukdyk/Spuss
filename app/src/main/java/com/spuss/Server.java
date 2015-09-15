@@ -48,7 +48,7 @@ class Server extends Thread {
 	private int				serverPORT		= 9000;
 	private String			serverName		= "mindis.inotecha.lt";
 	
-	String devInit = "{\"a300S1\":{\"type\":\"android\",\"alias\":\"JIAYU S1\"}}";
+	String devInit = "{\"id\":\"ANDR1\",\"type\":\"android\",\"alias\":\"LG G2\"}";
 	private Handler			uiHandler;
 
 	public Server() {

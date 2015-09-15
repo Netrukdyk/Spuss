@@ -53,7 +53,7 @@
         android:layout_centerHorizontal="true"
         android:src="@drawable/main0"
         android:scaleType="centerCrop"
-        style="?android:attr/borderlessButtonStyle" />
+        android:background="@null" />
 
     <Button
         android:layout_width="220dp"

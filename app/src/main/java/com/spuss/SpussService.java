@@ -80,7 +80,7 @@ public class SpussService extends Service {
         startServer();
     }
 
-    public void showNotification(Context context, String title, String contentText) {
+    public void showNotification(Context context, String title, String contentText, Boolean loud) {
 
         // define sound URI, the sound to be played when there's a notification
         Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -128,9 +128,9 @@ public class SpussService extends Service {
                         reconnect();
                     else {
                         String json = msg.getData().getString("Server");
-                        Log.e(TAG, json);
-                        if (json.contains("ping")) break;
 
+                        if (json.contains("ping")) break;
+//                        Log.e(TAG, json);
 //                        list.setText(json + '\n' + list.getText());
                         parse(json);
                     }
@@ -143,50 +143,53 @@ public class SpussService extends Service {
         String sensor = "";
         String who = "";
 
-        if (jsonText.equals("{}"))
+        if (jsonText.equals("{}") || jsonText.length() < 16)
             return;
+
         try {
-            JSONObject FullJson = new JSONObject(jsonText);
-
-            for (int i = 0; i < FullJson.names().length(); i++) {
-                String id = FullJson.names().getString(i);
-                JSONObject json = FullJson.getJSONObject(id);
-                String type = json.getString("type");
-                Log.v("JSON", json.toString());
-                if (type.equals("device")) {
-                    String alias = json.getString("alias");
-                    if (id.charAt(0) == 'R') {
-                        Boolean relay = json.getInt("relay") == 1;
-                        //addSocket(new Socket(id, alias, relay));
-                    } else if (id.charAt(0) == 'T') {
-                        String temp = json.getString("temp");
-                        //addTemp(new Temp(id, alias, temp));
-                    }
-                } else if (type.equals("del_device")) {
-                    //removeDevice(id);
-                } else if (type.equals("changed")) {
-
-                    if (id.charAt(0) == 'D') {
-                        who = "Durys";
-                        Boolean vibr = json.optInt("vibr") == 1;
-                        Boolean mic = json.optInt("mic") == 1;
-                        Log.e(TAG, vibr + "" + mic + "");
-                        sensor = (vibr) ? "Vibration" : (mic) ? "Mic" : "Other";
-                    } else if (id.charAt(0) == 'L') {
-                        who = "Langas";
-                        sensor = "Vibration";
-                    } else if (id.charAt(0) == 'S') {
-                        who = "Stalas";
-                        Boolean motion = json.optInt("motion") == 1;
-                        Boolean vibr = json.optInt("vibr") == 1;
-                        Boolean mic = json.optInt("mic") == 1;
-                        Log.e(TAG, vibr + "" + mic + "");
-                        sensor = (vibr) ? "Vibration" : (mic) ? "Mic" : (motion) ? "Motion" : "Other";
-                    }
-
-                    if(sensor != "Other") showNotification(this, who, sensor);
+            JSONObject json = new JSONObject(jsonText);
+            String id = json.optString("id", "");
+            Log.e(TAG, id);
+            String type = json.optString("type", "");
+            Log.v("JSON", json.toString());
+            if (type.equals("device")) {
+                String alias = json.getString("alias");
+                if (id.charAt(0) == 'R') {
+                    Boolean relay = json.getInt("relay") == 1;
+                    //addSocket(new Socket(id, alias, relay));
+                } else if (id.charAt(0) == 'T') {
+                    String temp = json.getString("temp");
+                    //addTemp(new Temp(id, alias, temp));
                 }
+            } else if (type.equals("del_device")) {
+                //removeDevice(id);
+            } else if (type.equals("changed")) {
+                JSONObject sensors = json.getJSONObject("sensors");
+                if (id.charAt(0) == 'D') {
+                    who = "Durys";
+                    Boolean vibr = sensors.optInt("vibr") == 1;
+                    Boolean mic = sensors.optInt("mic") == 1;
+                    Log.e(TAG, vibr + "" + mic + "");
+                    sensor = (vibr) ? "Vibration" : (mic) ? "Mic" : "Other";
+                } else if (id.charAt(0) == 'L') {
+                    who = "Langas";
+                    sensor = "Vibration";
+                } else if (id.charAt(0) == 'S') {
+                    who = "Stalas";
+                    Boolean motion = sensors.optInt("motion") == 1;
+                    Boolean vibr = sensors.optInt("vibr") == 1;
+                    Boolean mic = sensors.optInt("mic") == 1;
+                    Log.e(TAG, motion + " " + vibr + " " + mic);
+                    sensor = (vibr) ? "Vibration" : (mic) ? "Mic" : (motion) ? "Motion" : "Other";
+                }
+
+                if(sensor != "Other") showNotification(this, who, sensor, false);
+            } else if (type.equals("alarm")) {
+                int level = json.getInt("level");
+                Log.v(TAG, "Alarm "+level);
+                showNotification(this, "ALARM", level+"", true);
             }
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
