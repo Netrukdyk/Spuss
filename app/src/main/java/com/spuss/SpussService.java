@@ -83,7 +83,7 @@ public class SpussService extends Service {
     public void showNotification(Context context, String title, String contentText, Boolean loud) {
 
         // define sound URI, the sound to be played when there's a notification
-        Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        Uri soundUri = (loud)? RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION) : Uri.EMPTY;
 
         // intent triggered, you can add other intent for other actions
         Intent intent = new Intent(context, ActivityMain.class);
@@ -132,7 +132,11 @@ public class SpussService extends Service {
                         if (json.contains("ping")) break;
 //                        Log.e(TAG, json);
 //                        list.setText(json + '\n' + list.getText());
-                        parse(json);
+                        String[] separated = json.split("\n");
+                        for (String cmd : separated) {
+                            parse(cmd);
+                        }
+
                     }
                     break;
             }
@@ -183,11 +187,12 @@ public class SpussService extends Service {
                     sensor = (vibr) ? "Vibration" : (mic) ? "Mic" : (motion) ? "Motion" : "Other";
                 }
 
-                if(sensor != "Other") showNotification(this, who, sensor, false);
+                //if(sensor != "Other") showNotification(this, who, sensor, false);
             } else if (type.equals("alarm")) {
                 int level = json.getInt("level");
+                String devList = json.getString("events");
                 Log.v(TAG, "Alarm "+level);
-                showNotification(this, "ALARM", level+"", true);
+                showNotification(this, "ALARM", "Level "+level+", "+devList, true);
             }
 
         } catch (JSONException e) {
